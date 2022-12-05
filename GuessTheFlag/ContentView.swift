@@ -7,31 +7,19 @@
 
 import SwiftUI
 
-struct FlagImage: View{
-    let name: String
-    
-    var body: some View {
-        Image(name)
-            .renderingMode(.original)
-            .clipShape(Capsule())
-            .shadow(radius: 5)
-    }
-}
-
-
 struct ContentView: View {
+    private var gameSize = 15
     @State private var questionCounter = 1
     @State private var showingScore = false
     @State private var showingResult = false
     @State private var scoreTitle = ""
     @State private var score = 0
-    
-    @State private var countries = allCountries.shuffled()
+    @State private var selectedCountry = ""
+    @State private var countries = [Country]().shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
-    
-    @State private var selectFlag = -1
-    
-    static let allCountries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US",]
+    private var correctCountry: Country {
+        countries[correctAnswer]
+    }
     
     var body: some View {
         
@@ -45,87 +33,89 @@ struct ContentView: View {
             
             VStack {
                 Spacer()
-                
                 Text("Guess The Flag")
                     .font(.largeTitle.bold())
                     .foregroundColor(.white)
                 
-                VStack(spacing: 15) {
-                    
-                    VStack {
-                        
-                        Text("tap the flag of")
-                            .foregroundStyle(.secondary)
-                            .font(.subheadline.weight(.heavy))
-                        Text(countries[correctAnswer])
-                            .font(.largeTitle.weight(.semibold))
-                        
-                    }
-                    
-                    ForEach(0..<3){ number in
-                        Button {
-                            flageTapped(number)
-                        } label: {
-                           FlagImage(name: countries[number])
-                                .rotation3DEffect(.degrees(selectFlag == number ? 360 : 0), axis: (x: 0, y: 1, z: 0))
-                                .opacity(selectFlag == -1 || selectFlag == number ? 1 : 0.25)
-                                .blur(radius: selectFlag == -1 || selectFlag == number ? 0 : 3 )
-                                .animation(.default, value: selectFlag)
+                
+                if(countries.count > 3) {
+                    VStack(spacing: 15) {
+                        VStack {
+                            Text("tap the flag of")
+                                .foregroundStyle(.secondary)
+                                .font(.subheadline.weight(.heavy))
+                            Text(correctCountry.name.common)
+                                .font(.largeTitle.weight(.semibold))
                         }
+                        List {
+                            ForEach(countries[..<3], id: \.name.common) {country in
+                                CountryListItem(country: country, state: getState(country)).onTapGesture {
+                                    countryTapped(country);
+                                }
+                            }
+                        }
+                        
+                        
                     }
-                    
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 20)
-                .background(.regularMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 Spacer()
                 Spacer()
                 
-                Text("Score: \(score) ")
+                Text("Score: \(score) / \(gameSize)")
                     .foregroundColor(.white)
                     .font(.title.bold())
                 
                 Spacer()
+                
+            }
+            .task {
+                await loadData()
             }
             .padding()
+            
         }
+        
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion)
         } message: {
-            Text("Your score \(score)")
+            Text("Your score is \(score)")
         }
-        .alert("Game Over!", isPresented: $showingResult) {
+        .alert("Game over!", isPresented: $showingResult) {
             Button("Start Again", action: newGame)
         } message: {
             Text("Your final score was \(score)")
+            
         }
+        
     }
     
+    func getState(_ country: Country) ->  CountryListItemState {
+        if(selectedCountry == country.name.common) {
+            return CountryListItemState.selected;
+        }
+        if(selectedCountry.count > 0) {
+            return CountryListItemState.blurred;
+        }
+        return CountryListItemState.normal;
+    }
     
-    func flageTapped(_ number: Int) {
-        selectFlag = number
-        
-        if number == correctAnswer {
+    func countryTapped(_ country: Country) {
+        if country.name.common == correctCountry.name.common {
             scoreTitle = "Correct"
             score += 1
         } else {
-            
-            let theirAnswer = countries[number]
-            let needsThe = ["UK", "US"]
-            
-            if needsThe.contains(theirAnswer) {
-                scoreTitle = "Wrong! That's the flag of The \(theirAnswer)"
-            } else {
-                scoreTitle = "Wrong! That's the flag of \(theirAnswer)"
-            }
+            scoreTitle = "Wrong! That's the flag of the \(country.name.common)"
             if score > 0 {
                 score -= 1
             }
         }
         
-        if questionCounter == 8 {
+        if questionCounter == gameSize {
             showingResult = true
         } else {
             showingScore = true
@@ -134,24 +124,40 @@ struct ContentView: View {
     
     
     func askQuestion() {
-        countries.remove(at: correctAnswer)
         countries.shuffle()
-        correctAnswer = Int.random(in: 0...2)
+        correctAnswer = Int.random(in: 0...2);
         questionCounter += 1
-        selectFlag = -1
-        
+        selectedCountry = ""
     }
     
     func newGame() {
         questionCounter = 0
         score = 0
-        countries = Self.allCountries
         askQuestion()
     }
+    
+    func loadData() async {
+        guard let url = URL(string: "https://restcountries.com/v3.1/all?fields=name,flags") else {
+            print("Invalid URL")
+            return
+        }
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            if let decodedResponse = try? JSONDecoder().decode([Country].self, from: data) {
+                countries = decodedResponse
+            }
+        } catch {
+            print("Invalid data")
+        }
+    }
+    
+    
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
 }
+

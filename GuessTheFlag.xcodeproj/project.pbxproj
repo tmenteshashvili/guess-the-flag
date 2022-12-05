@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C10903C293E41E200664CAA /* CountryListItemState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C10903B293E41E200664CAA /* CountryListItemState.swift */; };
+		3C377E312930BF1A00E9EE73 /* CountryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C377E302930BF1A00E9EE73 /* CountryModel.swift */; };
+		3C377E532934D69500E9EE73 /* CountryListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C377E522934D69500E9EE73 /* CountryListItem.swift */; };
 		3CB4CDDB28E70B5100CB4720 /* GuessTheFlagApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CB4CDDA28E70B5100CB4720 /* GuessTheFlagApp.swift */; };
 		3CB4CDDD28E70B5100CB4720 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CB4CDDC28E70B5100CB4720 /* ContentView.swift */; };
 		3CB4CDDF28E70B5200CB4720 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CB4CDDE28E70B5200CB4720 /* Assets.xcassets */; };
@@ -14,6 +17,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C10903B293E41E200664CAA /* CountryListItemState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListItemState.swift; sourceTree = "<group>"; };
+		3C377E302930BF1A00E9EE73 /* CountryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryModel.swift; sourceTree = "<group>"; };
+		3C377E522934D69500E9EE73 /* CountryListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListItem.swift; sourceTree = "<group>"; };
 		3CB4CDD728E70B5100CB4720 /* GuessTheFlag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GuessTheFlag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CB4CDDA28E70B5100CB4720 /* GuessTheFlagApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessTheFlagApp.swift; sourceTree = "<group>"; };
 		3CB4CDDC28E70B5100CB4720 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -53,6 +59,9 @@
 			children = (
 				3CB4CDDA28E70B5100CB4720 /* GuessTheFlagApp.swift */,
 				3CB4CDDC28E70B5100CB4720 /* ContentView.swift */,
+				3C377E522934D69500E9EE73 /* CountryListItem.swift */,
+				3C377E302930BF1A00E9EE73 /* CountryModel.swift */,
+				3C10903B293E41E200664CAA /* CountryListItemState.swift */,
 				3CB4CDDE28E70B5200CB4720 /* Assets.xcassets */,
 				3CB4CDE028E70B5200CB4720 /* Preview Content */,
 			);
@@ -139,6 +148,9 @@
 			files = (
 				3CB4CDDD28E70B5100CB4720 /* ContentView.swift in Sources */,
 				3CB4CDDB28E70B5100CB4720 /* GuessTheFlagApp.swift in Sources */,
+				3C377E312930BF1A00E9EE73 /* CountryModel.swift in Sources */,
+				3C10903C293E41E200664CAA /* CountryListItemState.swift in Sources */,
+				3C377E532934D69500E9EE73 /* CountryListItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
